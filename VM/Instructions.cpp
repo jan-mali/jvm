@@ -1,17 +1,40 @@
 #include "Instructions.h"
 
+#include "Frame.h"
+
 #define TODO(opcode, name) \
 	uint16_t Instructions::op$##name(VM*, VMThread*, Frame&, Class*, Method*) { printf("TODO: Implement opcode: " #name); assert(false); }
 
 TODO(0, nop);
 TODO(1, aconst_null);
-TODO(2, iconst_m1);
-TODO(3, iconst_0);
-TODO(4, iconst_1);
-TODO(5, iconst_2);
-TODO(6, iconst_3);
-TODO(7, iconst_4);
-TODO(8, iconst_5);
+uint16_t Instructions::op$iconst_m1(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	frame.push_operand({ Variable::Type::Int, -1 });
+	return 1;
+}
+uint16_t Instructions::op$iconst_0(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	frame.push_operand({ Variable::Type::Int, 0 });
+	return 1;
+}
+uint16_t Instructions::op$iconst_1(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	frame.push_operand({ Variable::Type::Int, 1 });
+	return 1;
+}
+uint16_t Instructions::op$iconst_2(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	frame.push_operand({ Variable::Type::Int, 2 });
+	return 1;
+}
+uint16_t Instructions::op$iconst_3(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	frame.push_operand({ Variable::Type::Int, 3 });
+	return 1;
+}
+uint16_t Instructions::op$iconst_4(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	frame.push_operand({ Variable::Type::Int, 4 });
+	return 1;
+}
+uint16_t Instructions::op$iconst_5(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	frame.push_operand({ Variable::Type::Int, 5 });
+	return 1;
+}
 TODO(9, lconst_0);
 TODO(10, lconst_1);
 TODO(11, fconst_0);
