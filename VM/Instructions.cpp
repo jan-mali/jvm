@@ -98,7 +98,12 @@ TODO(12, fconst_1);
 TODO(13, fconst_2);
 TODO(14, dconst_0);
 TODO(15, dconst_1);
-TODO(16, bipush);
+uint16_t Instructions::op$bipush(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	const uint8_t byte = method->code_attribute().code[thread->pc().instruction + 1];
+	const Variable value = { Variable::Type::Int, byte };
+	frame.push_operand(value);
+	return 2;
+}
 TODO(17, sipush);
 TODO(18, ldc);
 TODO(19, ldc_w);
