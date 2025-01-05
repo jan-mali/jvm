@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <cstddef>
+#include <vector>
 
 #define __ENUMERATE_PREDEFINED_ATTRIBUTES \
 	__ENUM(ConstantValue) \
@@ -44,6 +45,12 @@ struct AttributesCreationResult {
 class Attributes {
 public:
 	static AttributesCreationResult create(const uint8_t* data, uint16_t attributes_count);
+	struct RawAttribute {
+		uint16_t attribute_name_index;
+		uint32_t attribute_length;
+		const uint8_t* info;
+	};
 private:
 	Attributes() = default;
+	std::vector<RawAttribute> m_attributes {};
 };

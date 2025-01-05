@@ -1,5 +1,7 @@
 #include "Attributes.h"
 
+#include <cstring>
+
 AttributesCreationResult Attributes::create(const uint8_t* data, const uint16_t attributes_count) {
 	auto* attributes = new Attributes();
 
@@ -12,9 +14,18 @@ AttributesCreationResult Attributes::create(const uint8_t* data, const uint16_t 
 		const uint32_t attribute_length = (ptr[0] << 24) + (ptr[1] << 16) + (ptr[2] << 8) + ptr[3];
 		ptr += sizeof(uint32_t);
 
-		// TODO: Properly load attributes
+		RawAttribute attribute {};
+		attribute.attribute_name_index = attribute_name_index;
+		attribute.attribute_length = attribute_length;
+
+		auto* attribute_info = new uint8_t[attribute_length];
+		memcpy(attribute_info, ptr, attribute_length);
+
+		attribute.info = attribute_info;
 
 		ptr += attribute_length;
+
+		attributes->m_attributes.push_back(attribute);
 	}
 
 	const size_t bytes = ptr - data;

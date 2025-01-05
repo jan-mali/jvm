@@ -169,6 +169,8 @@ ClassFile* ClassFile::create(const uint8_t* data) {
 
     printf("ClassFile::create: attributes creation successful\n");
 
+    // TODO: Class file verification & type checking
+
     printf("ClassFile has been loaded successfully\n");
 
     return class_file;
