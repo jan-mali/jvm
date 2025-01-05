@@ -183,6 +183,14 @@ public:
         };
     };
 
+    [[nodiscard]] ConstantPoolEntry get_index(const uint16_t index) const {
+        return m_constant_pool_entries[index];
+    }
+
+    [[nodiscard]] ConstantPoolEntry get_jvm_index(const uint16_t index) const {
+        return get_index(index - 1);
+    }
+
 private:
     ConstantPool() = default;
 

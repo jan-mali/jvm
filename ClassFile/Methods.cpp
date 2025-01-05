@@ -44,3 +44,9 @@ MethodsCreationResult Methods::create(const uint8_t* data, uint16_t Methods_coun
 		.bytes = bytes
 	};
 }
+
+void Methods::for_each(std::function<void(MethodInfo)> cb) {
+	for (auto mi: m_methods) {
+		cb(mi);
+	}
+}

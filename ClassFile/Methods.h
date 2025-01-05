@@ -24,6 +24,8 @@ public:
 		Attributes* attributes = nullptr;
 	};
 
+	void for_each(std::function<void(MethodInfo)> cb);
+
 private:
 	Methods() = default;
 	std::vector<MethodInfo> m_methods {};

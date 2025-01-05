@@ -14,4 +14,15 @@ add_executable(jvm main.cpp
         ClassFile/Methods.cpp
         ClassFile/Methods.h
         ClassFile/Attributes.cpp
-        ClassFile/Attributes.h)
+        ClassFile/Attributes.h
+        Loader/BootstrapClassLoader.cpp
+        Loader/BootstrapClassLoader.h
+        VM/MethodArea.cpp
+        VM/MethodArea.h
+        VM/VM.cpp
+        VM/VM.h
+        VM/Class.cpp
+        VM/Class.h
+        Loader/ClassLoader.h
+        VM/Method.cpp
+        VM/Method.h)

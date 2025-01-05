@@ -88,8 +88,8 @@ ClassFile* ClassFile::create(const uint8_t* data) {
     const uint16_t super_class = (ptr[0] << 8) | ptr[1];
     ptr += sizeof(uint16_t);
 
-    class_file->this_class = this_class;
-    class_file->super_class = super_class;
+    class_file->m_this_class = this_class;
+    class_file->m_super_class = super_class;
 
     printf("ClassFile::create: this_class %d\n", this_class);
     printf("ClassFile::create: super_class %d\n", super_class);

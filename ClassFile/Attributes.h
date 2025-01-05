@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <cstddef>
+#include <functional>
 #include <vector>
 
 #define __ENUMERATE_PREDEFINED_ATTRIBUTES \
@@ -35,6 +36,7 @@
 	__ENUM(ModulePackages) \
 	__ENUM(ModuleMainClass)
 
+class ConstantPool;
 class Attributes;
 
 struct AttributesCreationResult {
@@ -50,6 +52,60 @@ public:
 		uint32_t attribute_length;
 		const uint8_t* info;
 	};
+
+	enum class PredefinedAttributeType {
+		None = 0,
+#define __ENUM(name) name,
+		__ENUMERATE_PREDEFINED_ATTRIBUTES
+#undef __ENUM
+	};
+
+	static const char* predefined_attribute_name(const PredefinedAttributeType type) {
+		switch (type) {
+#define __ENUM(name) case PredefinedAttributeType::name: return #name;
+			__ENUMERATE_PREDEFINED_ATTRIBUTES
+#undef __ENUM
+			default:
+				return "<Invalid PredefinedAttributeType>";
+		}
+	}
+
+	struct CustomAttribute {
+		uint32_t length;
+		const uint8_t* data;
+	};
+
+	// https://docs.oracle.com/javase/specs/jvms/se23/html/jvms-4.html#jvms-4.7.3
+	struct CodeAttribute {
+		struct ExceptionTableEntry {
+			uint16_t start_pc = 0;
+			uint16_t end_pc = 0;
+			uint16_t handler_pc = 0;
+			uint16_t catch_type = 0;
+		};
+		uint16_t max_stack = 0;
+		uint16_t max_locals = 0;
+		uint32_t code_length = 0;
+		const uint8_t* code = nullptr;
+		uint16_t exception_table_length = 0;
+		std::vector<ExceptionTableEntry> exception_table {};
+		uint16_t attributes_count = 0;
+		Attributes* attributes = nullptr;
+
+		static CodeAttribute from_data(const uint8_t* data);
+	};
+
+	struct Attribute {
+		PredefinedAttributeType attribute_type;
+		union {
+			CustomAttribute custom;
+			CodeAttribute code;
+		};
+		~Attribute();
+	};
+
+	void for_each(ConstantPool* constant_pool, std::function<void(const char*, Attribute&)> cb) const;
+
 private:
 	Attributes() = default;
 	std::vector<RawAttribute> m_attributes {};
