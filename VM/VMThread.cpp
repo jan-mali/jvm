@@ -15,15 +15,25 @@ void VMThread::schedule() {
 		// TODO: Clean up?
 		return;
 	}
+
+	// This ensures that invoking a new method doesn't mess up our PC
+	if (m_is_next_pc_ready) {
+		m_is_next_pc_ready = false;
+		m_pc_stack.push_back(m_next_pc);
+	}
+
 	CodeAddress current_pc = pc();
-	Attributes::CodeAttribute code_attr = current_pc.method->code_attribute();
+	const Attributes::CodeAttribute code_attr = current_pc.method->code_attribute();
 	assert(current_pc.instruction < code_attr.code_length);
 	const uint8_t opcode = code_attr.code[current_pc.instruction];
 	const uint16_t bytes = Instructions::execute(opcode, m_vm, this, current_frame(), current_pc._class, current_pc.method);
 
-	// FIXME: This won't work if an instruction changes the PC
-	current_pc.instruction += bytes;
-	set_current_pc(current_pc);
+	if (bytes > 0) {
+		// When bytes == 0 it means that we have executed a return instruction and the PC should not be touched because
+		// the invoker's Frame & PC have already been reinstated
+		current_pc.instruction += bytes;
+		set_current_pc(current_pc);
+	}
 }
 
 void VMThread::handle_return() {
@@ -33,4 +43,9 @@ void VMThread::handle_return() {
 		return;
 	}
 	m_pc_stack.pop_back();
+}
+
+void VMThread::prepare_invocation(const CodeAddress& next_pc, const Frame& frame) {
+	m_frames.push_back(frame);
+	set_next_pc(next_pc);
 }

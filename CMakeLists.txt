@@ -33,4 +33,6 @@ add_executable(jvm main.cpp
         VM/Frame.h
         VM/Variable.h
         VM/Instructions.cpp
-        VM/Instructions.h)
+        VM/Instructions.h
+        Utils/HashTools.h
+        Utils/DescriptorTools.h)

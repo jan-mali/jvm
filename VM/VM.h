@@ -10,6 +10,9 @@ public:
 
 	void start(const char* class_name);
 	void add_class(Class* _class);
+
+	Class* get_class(const char* class_name);
+
 private:
 	BootstrapClassLoader m_bootstrap_class_loader;
 	MethodArea m_method_area;

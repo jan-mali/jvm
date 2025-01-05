@@ -12,6 +12,10 @@ void VM::add_class(Class* _class) {
 	m_method_area.add_class(_class);
 }
 
+Class* VM::get_class(const char* class_name) {
+	return m_bootstrap_class_loader.load_class(this, class_name);
+}
+
 void VM::invoke_main(Class* _class) {
 	Method* main = _class->find_method("main", "([Ljava/lang/String;)V");
 	if (!main) {

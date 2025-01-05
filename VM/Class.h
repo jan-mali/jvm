@@ -14,6 +14,7 @@ public:
 	Method* find_method(const char* name, const char* descriptor) const;
 
 	[[nodiscard]] const char* name() const;
+	[[nodiscard]] ConstantPool* constant_pool() const { return m_constant_pool; }
 private:
 	Class() = default;
 

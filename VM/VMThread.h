@@ -27,7 +27,18 @@ public:
 		m_pc_stack.push_back(pc);
 	}
 
+	void set_next_pc(const CodeAddress& pc) {
+		m_is_next_pc_ready = true;
+		m_next_pc = pc;
+	}
+
 	void handle_return();
+	void prepare_invocation(const CodeAddress& next_pc, const Frame& frame);
+
+	Frame& current_frame() {
+		assert(!m_frames.empty());
+		return m_frames.back();
+	}
 
 private:
 	VM* m_vm = nullptr;
@@ -36,8 +47,6 @@ private:
 
 	bool m_is_terminating = false;
 
-	Frame& current_frame() {
-		assert(!m_frames.empty());
-		return m_frames.back();
-	}
+	bool m_is_next_pc_ready = false;
+	CodeAddress m_next_pc {};
 };

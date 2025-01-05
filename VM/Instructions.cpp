@@ -1,11 +1,65 @@
 #include "Instructions.h"
 
+#include "Class.h"
 #include "Frame.h"
 #include "Method.h"
+#include "VM.h"
 #include "VMThread.h"
+#include "../ClassFile/ConstantPool.h"
+#include "../Utils/DescriptorTools.h"
 
 #define TODO(opcode, name) \
 	uint16_t Instructions::op$##name(VM*, VMThread*, Frame&, Class*, Method*) { printf("TODO: Implement opcode: " #name); assert(false); }
+
+struct MethodSearchResult {
+	Class* _class;
+	Method* method;
+};
+
+static MethodSearchResult find_method(uint16_t cp_methodref_index, VM* vm, Class* _class) {
+	MethodSearchResult result {};
+
+	ConstantPool::ConstantPoolEntry methodref_entry = _class->constant_pool()->get_jvm_index(cp_methodref_index);
+	assert(methodref_entry.tag == ConstantPool::Tag::Methodref);
+
+	uint16_t class_index = methodref_entry.method_ref.class_index;
+	uint16_t name_and_type_index = methodref_entry.method_ref.name_and_type_index;
+
+	ConstantPool::ConstantPoolEntry class_entry = _class->constant_pool()->get_jvm_index(class_index);
+	assert(class_entry.tag == ConstantPool::Tag::Class);
+
+	ConstantPool::ConstantPoolEntry name_and_type_entry = _class->constant_pool()->get_jvm_index(name_and_type_index);
+	assert(name_and_type_entry.tag == ConstantPool::Tag::NameAndType);
+
+	uint16_t class_name_index = class_entry._class.name_index;
+	ConstantPool::ConstantPoolEntry class_name_entry = _class->constant_pool()->get_jvm_index(class_name_index);
+	assert(class_name_entry.tag == ConstantPool::Tag::Utf8);
+
+	uint16_t method_name_index = name_and_type_entry.name_and_type.name_index;
+	ConstantPool::ConstantPoolEntry method_name_entry = _class->constant_pool()->get_jvm_index(method_name_index);
+	assert(method_name_entry.tag == ConstantPool::Tag::Utf8);
+
+	uint16_t method_descriptor_index = name_and_type_entry.name_and_type.descriptor_index;
+	ConstantPool::ConstantPoolEntry method_descriptor_entry = _class->constant_pool()->get_jvm_index(method_descriptor_index);
+	assert(method_descriptor_entry.tag == ConstantPool::Tag::Utf8);
+
+	const char* class_name = class_name_entry.utf8.bytes;
+	const char* method_name = method_name_entry.utf8.bytes;
+	const char* method_descriptor = method_descriptor_entry.utf8.bytes;
+
+	printf("find_method: %s.%s%s\n", class_name, method_name, method_descriptor);
+
+	Class* target_class = vm->get_class(class_name);
+	assert(target_class);
+
+	Method* target_method = target_class->find_method(method_name, method_descriptor);
+	assert(target_method);
+
+	result._class = target_class;
+	result.method = target_method;
+
+	return result;
+}
 
 TODO(0, nop);
 TODO(1, aconst_null);
@@ -257,7 +311,19 @@ TODO(168, jsr);
 TODO(169, ret);
 TODO(170, tableswitch);
 TODO(171, lookupswitch);
-TODO(172, ireturn);
+uint16_t Instructions::op$ireturn(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	// TODO: Handle monitors
+	if (method->access_flags().is_synchronized()) {
+		printf("TODO: Don't know how to handle synchronized methods\n");
+		assert(false);
+	}
+	const Variable value = frame.pop_operand();
+	thread->handle_return();
+	if (!thread->is_terminating())
+		thread->current_frame().push_operand(value);
+	// Don't increment the PC because it has already been replaced
+	return 0;
+}
 TODO(173, lreturn);
 TODO(174, freturn);
 TODO(175, dreturn);
@@ -265,7 +331,7 @@ TODO(176, areturn);
 uint16_t Instructions::op$return(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
 	// TODO: Handle monitors
 	if (method->access_flags().is_synchronized()) {
-		printf("TODO: Don't know how to handle synchronized methods");
+		printf("TODO: Don't know how to handle synchronized methods\n");
 		assert(false);
 	}
 	thread->handle_return();
@@ -278,7 +344,50 @@ TODO(180, getfield);
 TODO(181, putfield);
 TODO(182, invokevirtual);
 TODO(183, invokespecial);
-TODO(184, invokestatic);
+uint16_t Instructions::op$invokestatic(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	const uint8_t indexbyte1 = method->code_attribute().code[thread->pc().instruction + 1];
+	const uint8_t indexbyte2 = method->code_attribute().code[thread->pc().instruction + 2];
+	const uint16_t index = indexbyte1 << 8 | indexbyte2;
+
+	auto [target_class, target_method] = find_method(index, vm, _class);
+	assert(target_class);
+	assert(target_method);
+
+	assert(target_method->access_flags().is_static());
+	assert(!target_method->access_flags().is_abstract());
+
+	if (target_method->access_flags().is_synchronized()) {
+		printf("Synchronized methods are not supported yet\n");
+		assert(false);
+	}
+
+	MethodDescriptor md = DescriptorTools::parse_method(target_method->descriptor());
+	const int argument_count = md.params.size();
+
+	auto arguments = std::vector<Variable>(argument_count, Variable());
+	for (int i = argument_count - 1; i >= 0; --i) {
+		arguments[i] = frame.pop_operand();
+	}
+
+	if (target_method->access_flags().is_native()) {
+		// TODO: Call native method
+		printf("Native methods are not supported yet\n");
+		assert(false);
+		return 3;
+	}
+
+	Frame new_frame = Frame::create(target_method->code_attribute());
+
+	for (int i = 0; i < argument_count; ++i) {
+		new_frame.store_local(i, arguments[i]);
+	}
+
+	const CodeAddress new_pc = { target_class, target_method, 0 };
+
+	thread->prepare_invocation(new_pc, new_frame);
+
+	return 3;
+}
 TODO(185, invokeinterface);
 TODO(186, invokedynamic);
 TODO(187, new);
