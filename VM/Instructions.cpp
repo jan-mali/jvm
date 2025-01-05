@@ -61,7 +61,9 @@ static MethodSearchResult find_method(uint16_t cp_methodref_index, VM* vm, Class
 	return result;
 }
 
-TODO(0, nop);
+uint16_t Instructions::op$nop(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	return 1;
+}
 TODO(1, aconst_null);
 uint16_t Instructions::op$iconst_m1(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
 	frame.push_operand({ Variable::Type::Int, -1 });
@@ -410,8 +412,14 @@ TODO(198, ifnull);
 TODO(199, ifnonnull);
 TODO(200, goto_w);
 TODO(201, jsr_w);
-TODO(202, breakpoint);
-TODO(254, impdep1);
-TODO(255, impdep2);
+uint16_t Instructions::op$breakpoint(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	return 1;
+}
+uint16_t Instructions::op$impdep1(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	return 1;
+}
+uint16_t Instructions::op$impdep2(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	return 1;
+}
 
 #undef TODO
