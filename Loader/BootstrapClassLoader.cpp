@@ -8,7 +8,7 @@
 #include "../VM/Class.h"
 #include "../VM/VM.h"
 
-void BootstrapClassLoader::load_class(VM* vm, const char* class_name) {
+Class* BootstrapClassLoader::load_class(VM* vm, const char* class_name) {
 
 	// TODO: Properly look for the class
 
@@ -40,4 +40,6 @@ void BootstrapClassLoader::load_class(VM* vm, const char* class_name) {
 	vm->add_class(_class);
 
 	free(class_path);
+
+	return _class;
 }

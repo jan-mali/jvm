@@ -4,30 +4,30 @@
 
 #include "../ClassFile/ConstantPool.h"
 
-Method Method::from_method_info(ConstantPool* constant_pool, Methods::MethodInfo method_info) {
-	Method method {};
+Method* Method::from_method_info(ConstantPool* constant_pool, Methods::MethodInfo method_info) {
+	Method* method = new Method();
 
-	method.m_access_flags = method_info.access_flags;
+	method->m_access_flags = method_info.access_flags;
 
 	ConstantPool::ConstantPoolEntry name_entry = constant_pool->get_jvm_index(method_info.name_index);
 	assert(name_entry.tag == ConstantPool::Tag::Utf8);
-	method.m_name = name_entry.utf8.bytes;
+	method->m_name = name_entry.utf8.bytes;
 
 	ConstantPool::ConstantPoolEntry descriptor_entry = constant_pool->get_jvm_index(method_info.descriptor_index);
 	assert(descriptor_entry.tag == ConstantPool::Tag::Utf8);
-	method.m_descriptor = descriptor_entry.utf8.bytes;
+	method->m_descriptor = descriptor_entry.utf8.bytes;
 
 	method_info.attributes->for_each(constant_pool, [&method, constant_pool](const char* attr_name, Attributes::Attribute& attr) {
 		switch (attr.attribute_type) {
 			case Attributes::PredefinedAttributeType::Code: {
 				Attributes::CodeAttribute code = attr.code;
 
-				method.m_code_attribute = code;
+				method->m_code_attribute = code;
 
 				code.attributes->for_each(constant_pool, [&method](const char* code_attr_name, Attributes::Attribute& code_attr) {
 					// We only want the LineNumberTable for now
 					if (code_attr.attribute_type == Attributes::PredefinedAttributeType::LineNumberTable) {
-						method.m_line_number_table_attribute = code_attr.line_number_table;
+						method->m_line_number_table_attribute = code_attr.line_number_table;
 						return;
 					}
 					printf("Skipping Code attr's attribute: %s\n", code_attr_name);

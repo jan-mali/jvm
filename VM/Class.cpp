@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <cstdio>
+#include <cstring>
 
 #include "../ClassFile/ClassFile.h"
 
@@ -14,7 +15,7 @@ Class* Class::from_class_file(ClassLoader* loader, ClassFile* class_file) {
 	_class->m_constant_pool = class_file->constant_pool();
 
 	class_file->methods()->for_each([_class](Methods::MethodInfo mi) {
-		const Method method = Method::from_method_info(_class->m_constant_pool, mi);
+		Method* method = Method::from_method_info(_class->m_constant_pool, mi);
 		_class->m_methods.push_back(method);
 	});
 
@@ -47,6 +48,17 @@ Class* Class::from_class_file(ClassLoader* loader, ClassFile* class_file) {
 
 void Class::dump() const {
 	printf("Class dump: %s\n", name());
+}
+
+Method* Class::find_method(const char *name, const char *descriptor) const {
+	for (auto method: m_methods) {
+		if (strcmp(method->name(), name) != 0)
+			continue;
+		if (strcmp(method->descriptor(), descriptor) != 0)
+			continue;
+		return method;
+	}
+	return nullptr;
 }
 
 const char* Class::name() const {
