@@ -20,17 +20,24 @@ Class* BootstrapClassLoader::load_class(VM* vm, const char* class_name) {
 
 	// TODO: Properly look for the class
 
-	auto class_path = static_cast<char *>(malloc(strlen(class_name) + 9));
-	strcpy(class_path, "./");
+	auto class_path = static_cast<char *>(malloc(strlen(class_name) + 15));
+	strcpy(class_path, "Runtime/");
 	strcat(class_path, class_name);
 	strcat(class_path, ".class");
 	printf("Loading class %s from path %s\n", class_name, class_path);
 
-		ClassFile* class_file = ClassFile::create_from_path(class_path);
+	ClassFile* class_file = ClassFile::create_from_path(class_path);
 	if (!class_file) {
-		// TODO: Throw exception
-		printf("Failed to load class %s\n", class_name);
-		abort();
+		printf("Failed to load class %s from Runtime, checking CWD\n", class_name);
+		strcpy(class_path, "./");
+		strcat(class_path, class_name);
+		strcat(class_path, ".class");
+		class_file = ClassFile::create_from_path(class_path);
+	}
+
+	if (!class_file) {
+		printf("Failed to load class %s from CWD, aborting\n", class_name);
+		return nullptr;
 	}
 
 	Class* _class = Class::from_class_file(this, class_file);

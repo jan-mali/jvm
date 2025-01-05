@@ -36,3 +36,37 @@ add_executable(jvm main.cpp
         VM/Instructions.h
         Utils/HashTools.h
         Utils/DescriptorTools.h)
+
+# Java Runtime
+set(RUNTIME_DIR ${CMAKE_SOURCE_DIR}/Runtime)
+
+# Find all Java source files in the Runtime directory
+file(GLOB_RECURSE JAVA_FILES "${RUNTIME_DIR}/*.java")
+
+# Locate Java tools
+find_package(Java REQUIRED)
+find_package(JNI REQUIRED)
+
+if(JAVA_FILES)
+    # Specify the output directory for compiled .class files
+    set(JAVA_OUTPUT_DIR ${CMAKE_BINARY_DIR}/Runtime)
+
+    # Create a custom target for Java compilation
+    add_custom_target(CompileJava ALL
+            COMMAND ${Java_JAVAC_EXECUTABLE} -d ${JAVA_OUTPUT_DIR} ${JAVA_FILES}
+            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+            COMMENT "Compiling Java files in Runtime directory"
+    )
+
+    # Ensure the target is built before the main executable
+    add_dependencies(jvm CompileJava)
+
+    # Copy Runtime directory to the build output folder
+    add_custom_command(TARGET jvm POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${RUNTIME_DIR} ${CMAKE_BINARY_DIR}/Runtime
+            COMMENT "Copying Runtime directory to build output folder"
+    )
+else()
+    message(WARNING "No Java files found in ${RUNTIME_DIR}")
+endif()
