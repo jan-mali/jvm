@@ -262,7 +262,16 @@ TODO(173, lreturn);
 TODO(174, freturn);
 TODO(175, dreturn);
 TODO(176, areturn);
-TODO(177, return);
+uint16_t Instructions::op$return(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	// TODO: Handle monitors
+	if (method->access_flags().is_synchronized()) {
+		printf("TODO: Don't know how to handle synchronized methods");
+		assert(false);
+	}
+	thread->handle_return();
+	// Don't increment the PC because it has already been replaced
+	return 0;
+}
 TODO(178, getstatic);
 TODO(179, putstatic);
 TODO(180, getfield);

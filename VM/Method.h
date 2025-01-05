@@ -11,6 +11,7 @@ public:
 	[[nodiscard]] Attributes::CodeAttribute code_attribute() const { return m_code_attribute; }
 	[[nodiscard]] Attributes::LineNumberTable line_number_table() const { return m_line_number_table_attribute; }
 
+	[[nodiscard]] AccessFlags access_flags() const { return m_access_flags; }
 	[[nodiscard]] const char* name() const { return m_name; }
 	[[nodiscard]] const char* descriptor() const { return m_descriptor; }
 private:

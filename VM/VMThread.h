@@ -17,10 +17,21 @@ public:
 	void terminate() { m_is_terminating = true; }
 	[[nodiscard]] bool is_terminating() const { return m_is_terminating; }
 
-	[[nodiscard]] CodeAddress pc() const { return m_pc; }
+	[[nodiscard]] CodeAddress pc() const {
+		assert(!m_pc_stack.empty());
+		return m_pc_stack.back();
+	}
+	void set_current_pc(const CodeAddress& pc) {
+		assert(!m_pc_stack.empty());
+		m_pc_stack.pop_back();
+		m_pc_stack.push_back(pc);
+	}
+
+	void handle_return();
+
 private:
 	VM* m_vm = nullptr;
-	CodeAddress m_pc {};
+	std::vector<CodeAddress> m_pc_stack{};
 	std::vector<Frame> m_frames{};
 
 	bool m_is_terminating = false;
