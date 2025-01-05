@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "Loader/ClassFile.h"
+#include "ClassFile/ClassFile.h"
 
 // Spec link: https://docs.oracle.com/javase/specs/jvms/se23/html/index.html
 int main() {
