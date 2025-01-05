@@ -1,6 +1,8 @@
 #include "Instructions.h"
 
 #include "Frame.h"
+#include "Method.h"
+#include "VMThread.h"
 
 #define TODO(opcode, name) \
 	uint16_t Instructions::op$##name(VM*, VMThread*, Frame&, Class*, Method*) { printf("TODO: Implement opcode: " #name); assert(false); }
@@ -208,7 +210,14 @@ TODO(128, ior);
 TODO(129, lor);
 TODO(130, ixor);
 TODO(131, lxor);
-TODO(132, iinc);
+uint16_t Instructions::op$iinc(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	uint8_t index = method->code_attribute().code[thread->pc().instruction + 1];
+	uint8_t _const = method->code_attribute().code[thread->pc().instruction + 2];
+	Variable value = frame.read_local(index);
+	value.value += _const;
+	frame.store_local(index, value);
+	return 3;
+}
 TODO(133, i2l);
 TODO(134, i2f);
 TODO(135, i2d);

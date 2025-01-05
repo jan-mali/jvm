@@ -17,6 +17,7 @@ public:
 	void terminate() { m_is_terminating = true; }
 	[[nodiscard]] bool is_terminating() const { return m_is_terminating; }
 
+	[[nodiscard]] CodeAddress pc() const { return m_pc; }
 private:
 	VM* m_vm = nullptr;
 	CodeAddress m_pc {};
