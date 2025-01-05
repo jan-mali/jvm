@@ -18,6 +18,30 @@ Class* Class::from_class_file(ClassLoader* loader, ClassFile* class_file) {
 		_class->m_methods.push_back(method);
 	});
 
+	class_file->attributes()->for_each(_class->m_constant_pool, [](const char* attr_name, Attributes::Attribute& attr) {
+		switch (attr.attribute_type) {
+			case Attributes::PredefinedAttributeType::SourceFile:
+			case Attributes::PredefinedAttributeType::InnerClasses:
+			case Attributes::PredefinedAttributeType::EnclosingMethod:
+			case Attributes::PredefinedAttributeType::SourceDebugExtension:
+			case Attributes::PredefinedAttributeType::BootstrapMethods:
+			case Attributes::PredefinedAttributeType::Module:
+			case Attributes::PredefinedAttributeType::ModulePackages:
+			case Attributes::PredefinedAttributeType::ModuleMainClass:
+			case Attributes::PredefinedAttributeType::NestHost:
+			case Attributes::PredefinedAttributeType::NestMembers:
+			case Attributes::PredefinedAttributeType::Record:
+			case Attributes::PredefinedAttributeType::PermittedSubclasses:
+				// TODO: Implement
+				printf("\tTODO: Implement attribute %s\n", attr_name);
+				break;
+			default:
+				// Ignore custom attributes
+				printf("\tSkipping custom attribute %s\n", attr_name);
+				break;
+		}
+	});
+
 	return _class;
 }
 
