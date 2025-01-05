@@ -196,3 +196,5 @@ private:
 
     std::vector<ConstantPoolEntry> m_constant_pool_entries {};
 };
+
+#undef __ENUMERATE_CONSTANT_POOL_TAGS

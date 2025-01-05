@@ -36,3 +36,5 @@ struct Variable {
 	Type type = Type::Invalid;
 	int32_t value = 0;
 };
+
+#undef __ENUMERATE_VARIABLE_TYPES

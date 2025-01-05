@@ -123,3 +123,5 @@ private:
 	Attributes() = default;
 	std::vector<RawAttribute> m_attributes {};
 };
+
+#undef __ENUMERATE_PREDEFINED_ATTRIBUTES
