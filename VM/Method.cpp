@@ -45,6 +45,7 @@ Method Method::from_method_info(ConstantPool* constant_pool, Methods::MethodInfo
 				break;
 			default:
 				// We don't care about any custom attributes
+				printf("\tSkipping custom attribute %s\n", attr_name);
 				break;
 		}
 	});
