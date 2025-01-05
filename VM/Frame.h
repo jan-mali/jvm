@@ -23,6 +23,17 @@ public:
 		assert(index < m_operand_stack.size());
 		return m_operand_stack[m_operand_stack.size() - index - 1];
 	}
+
+	void store_local(const uint16_t index, const Variable variable) {
+		assert(m_local_variables.size() == m_max_locals);
+		assert(index < m_max_locals);
+		m_local_variables[index] = variable;
+	}
+	[[nodiscard]] Variable read_local(const uint16_t index) const {
+		assert(m_local_variables.size() == m_max_locals);
+		assert(index < m_max_locals);
+		return m_local_variables[index];
+	}
 private:
 	Frame() = default;
 	uint16_t m_max_locals = 0;

@@ -52,10 +52,26 @@ TODO(22, lload);
 TODO(23, fload);
 TODO(24, dload);
 TODO(25, aload);
-TODO(26, iload_0);
-TODO(27, iload_1);
-TODO(28, iload_2);
-TODO(29, iload_3);
+uint16_t Instructions::op$iload_0(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	const Variable value = frame.read_local(0);
+	frame.push_operand(value);
+	return 1;
+}
+uint16_t Instructions::op$iload_1(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	const Variable value = frame.read_local(1);
+	frame.push_operand(value);
+	return 1;
+}
+uint16_t Instructions::op$iload_2(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	const Variable value = frame.read_local(2);
+	frame.push_operand(value);
+	return 1;
+}
+uint16_t Instructions::op$iload_3(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	const Variable value = frame.read_local(3);
+	frame.push_operand(value);
+	return 1;
+}
 TODO(30, lload_0);
 TODO(31, lload_1);
 TODO(32, lload_2);
@@ -85,10 +101,26 @@ TODO(55, lstore);
 TODO(56, fstore);
 TODO(57, dstore);
 TODO(58, astore);
-TODO(59, istore_0);
-TODO(60, istore_1);
-TODO(61, istore_2);
-TODO(62, istore_3);
+uint16_t Instructions::op$istore_0(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	const Variable value = frame.pop_operand();
+	frame.store_local(0, value);
+	return 1;
+}
+uint16_t Instructions::op$istore_1(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	const Variable value = frame.pop_operand();
+	frame.store_local(1, value);
+	return 1;
+}
+uint16_t Instructions::op$istore_2(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	const Variable value = frame.pop_operand();
+	frame.store_local(2, value);
+	return 1;
+}
+uint16_t Instructions::op$istore_3(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	const Variable value = frame.pop_operand();
+	frame.store_local(3, value);
+	return 1;
+}
 TODO(63, lstore_0);
 TODO(64, lstore_1);
 TODO(65, lstore_2);
