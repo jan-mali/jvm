@@ -31,4 +31,6 @@ add_executable(jvm main.cpp
         VM/CodeAddress.h
         VM/Frame.cpp
         VM/Frame.h
-        VM/Variable.h)
+        VM/Variable.h
+        VM/Instructions.cpp
+        VM/Instructions.h)

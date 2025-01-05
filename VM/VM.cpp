@@ -26,5 +26,7 @@ void VM::invoke_main(Class* _class) {
 
 void VM::schedule_single(VMThread* thread) {
 	printf("Starting execution of a single thread\n");
-	// TODO: Actually run the program
+	while (!thread->is_terminating()) {
+		thread->schedule();
+	}
 }
