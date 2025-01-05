@@ -154,15 +154,33 @@ TODO(92, dup2);
 TODO(93, dup2_x1);
 TODO(94, dup2_x2);
 TODO(95, swap);
-TODO(96, iadd);
+uint16_t Instructions::op$iadd(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	const Variable value2 = frame.pop_operand();
+	const Variable value1 = frame.pop_operand();
+	const Variable result = { Variable::Type::Int, value1.value + value2.value };
+	frame.push_operand(result);
+	return 1;
+}
 TODO(97, ladd);
 TODO(98, fadd);
 TODO(99, dadd);
-TODO(100, isub);
+uint16_t Instructions::op$isub(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	const Variable value2 = frame.pop_operand();
+	const Variable value1 = frame.pop_operand();
+	const Variable result = { Variable::Type::Int, value1.value - value2.value };
+	frame.push_operand(result);
+	return 1;
+}
 TODO(101, lsub);
 TODO(102, fsub);
 TODO(103, dsub);
-TODO(104, imul);
+uint16_t Instructions::op$imul(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	const Variable value2 = frame.pop_operand();
+	const Variable value1 = frame.pop_operand();
+	const Variable result = { Variable::Type::Int, value1.value * value2.value };
+	frame.push_operand(result);
+	return 1;
+}
 TODO(105, lmul);
 TODO(106, fmul);
 TODO(107, dmul);
