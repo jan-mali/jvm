@@ -27,12 +27,12 @@ private:
     AccessFlags m_access_flags { 0 };
     uint16_t m_this_class = 0;
     uint16_t m_super_class = 0;
-    uint16_t interfaces_count = 0;
-    uint16_t* interfaces = nullptr;
-    uint16_t fields_count = 0;
+    uint16_t m_interfaces_count = 0;
+    uint16_t* m_interfaces = nullptr;
+    uint16_t m_fields_count = 0;
     Fields* m_fields = nullptr;
-    uint16_t methods_count = 0;
+    uint16_t m_methods_count = 0;
     Methods* m_methods = nullptr;
-    uint16_t attributes_count = 0;
+    uint16_t m_attributes_count = 0;
     Attributes* m_attributes = nullptr;
 };

@@ -96,7 +96,7 @@ ClassFile* ClassFile::create(const uint8_t* data) {
 
     uint16_t interfaces_count = (ptr[0] << 8) | ptr[1];
     ptr += sizeof(uint16_t);
-    class_file->interfaces_count = interfaces_count;
+    class_file->m_interfaces_count = interfaces_count;
     printf("ClassFile::create: interfaces_count %d\n", interfaces_count);
 
     auto* interfaces = static_cast<uint16_t*>(calloc(interfaces_count, sizeof(uint16_t)));
@@ -113,11 +113,11 @@ ClassFile* ClassFile::create(const uint8_t* data) {
         printf("ClassFile::create: -> interface @ %d\n", interface);
     }
 
-    class_file->interfaces = interfaces;
+    class_file->m_interfaces = interfaces;
 
     uint16_t fields_count = (ptr[0] << 8) | ptr[1];
     ptr += sizeof(uint16_t);
-    class_file->fields_count = fields_count;
+    class_file->m_fields_count = fields_count;
     printf("ClassFile::create: fields_count %d\n", fields_count);
 
     FieldsCreationResult fields_creation_result = Fields::create(ptr, fields_count);
@@ -136,7 +136,7 @@ ClassFile* ClassFile::create(const uint8_t* data) {
 
     uint16_t methods_count = (ptr[0] << 8) | ptr[1];
     ptr += sizeof(uint16_t);
-    class_file->methods_count = methods_count;
+    class_file->m_methods_count = methods_count;
     printf("ClassFile::create: methods_count %d\n", methods_count);
 
     MethodsCreationResult methods_creation_result = Methods::create(ptr, methods_count);
