@@ -95,11 +95,24 @@ public:
 		static CodeAttribute from_data(const uint8_t* data);
 	};
 
+	// https://docs.oracle.com/javase/specs/jvms/se23/html/jvms-4.html#jvms-4.7.12
+	struct LineNumberTable {
+		struct LineNumberTableEntry {
+			uint16_t start_pc = 0;
+			uint16_t line_number = 0;
+		};
+		uint16_t line_number_table_length = 0;
+		std::vector<LineNumberTableEntry> line_number_table {};
+
+		static LineNumberTable from_data(const uint8_t* data);
+	};
+
 	struct Attribute {
 		PredefinedAttributeType attribute_type;
 		union {
 			CustomAttribute custom;
 			CodeAttribute code;
+			LineNumberTable line_number_table;
 		};
 		~Attribute();
 	};

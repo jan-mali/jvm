@@ -17,12 +17,24 @@ Method Method::from_method_info(ConstantPool* constant_pool, Methods::MethodInfo
 	assert(descriptor_entry.tag == ConstantPool::Tag::Utf8);
 	method.m_descriptor = descriptor_entry.utf8.bytes;
 
-	method_info.attributes->for_each(constant_pool, [&method](const char* attr_name, Attributes::Attribute& attr) {
+	method_info.attributes->for_each(constant_pool, [&method, constant_pool](const char* attr_name, Attributes::Attribute& attr) {
 		switch (attr.attribute_type) {
-			case Attributes::PredefinedAttributeType::Code:
-				method.m_code_attribute = attr.code;
-				// TODO: LineNumberTable
+			case Attributes::PredefinedAttributeType::Code: {
+				Attributes::CodeAttribute code = attr.code;
+
+				method.m_code_attribute = code;
+
+				code.attributes->for_each(constant_pool, [&method](const char* code_attr_name, Attributes::Attribute& code_attr) {
+					// We only want the LineNumberTable for now
+					if (code_attr.attribute_type == Attributes::PredefinedAttributeType::LineNumberTable) {
+						method.m_line_number_table_attribute = code_attr.line_number_table;
+						return;
+					}
+					printf("Skipping Code attr's attribute: %s\n", code_attr_name);
+				});
+
 				break;
+			}
 			case Attributes::PredefinedAttributeType::Exceptions:
 			case Attributes::PredefinedAttributeType::RuntimeVisibleParameterAnnotations:
 			case Attributes::PredefinedAttributeType::RuntimeInvisibleParameterAnnotations:

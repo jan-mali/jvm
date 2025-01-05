@@ -15,4 +15,5 @@ private:
 	const char* m_descriptor = nullptr;
 
 	Attributes::CodeAttribute m_code_attribute {};
+	Attributes::LineNumberTable m_line_number_table_attribute {};
 };

@@ -92,6 +92,30 @@ Attributes::CodeAttribute Attributes::CodeAttribute::from_data(const uint8_t *da
 	return  attr;
 }
 
+Attributes::LineNumberTable Attributes::LineNumberTable::from_data(const uint8_t *data) {
+	LineNumberTable lnt {};
+
+	const uint8_t* ptr = data;
+
+	lnt.line_number_table_length = (ptr[0] << 8) + ptr[1];
+	ptr += sizeof(uint16_t);
+
+	for (uint16_t i = 0; i < lnt.line_number_table_length; i++) {
+		uint16_t start_pc = (ptr[0] << 8) + ptr[1];
+		ptr += sizeof(uint16_t);
+
+		uint16_t line_number = (ptr[0] << 8) + ptr[1];
+		ptr += sizeof(uint16_t);
+
+		lnt.line_number_table.push_back({
+			.start_pc = start_pc,
+			.line_number = line_number
+		});
+	}
+
+	return lnt;
+}
+
 Attributes::Attribute::~Attribute() {
 	switch (attribute_type) {
 		case PredefinedAttributeType::None:
@@ -99,6 +123,9 @@ Attributes::Attribute::~Attribute() {
 			break;
 		case PredefinedAttributeType::Code:
 			code.~CodeAttribute();
+			break;
+		case PredefinedAttributeType::LineNumberTable:
+			line_number_table.~LineNumberTable();
 			break;
 		default:
 			assert(false);
@@ -115,6 +142,9 @@ void Attributes::for_each(ConstantPool* constant_pool, std::function<void(const 
 		if (strcmp(name, "Code") == 0) {
 			attribute.attribute_type = PredefinedAttributeType::Code;
 			attribute.code = CodeAttribute::from_data(raw_attr.info);
+		} else if (strcmp(name, "LineNumberTable") == 0) {
+			attribute.attribute_type = PredefinedAttributeType::LineNumberTable;
+			attribute.line_number_table = LineNumberTable::from_data(raw_attr.info);
 		} else {
 			attribute.attribute_type = PredefinedAttributeType::None;
 			attribute.custom = {
