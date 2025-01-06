@@ -376,14 +376,7 @@ uint16_t Instructions::op$invokestatic(VM* vm, VMThread* thread, Frame& frame, C
 		arguments[i] = frame.pop_operand();
 	}
 
-	if (target_method->access_flags().is_native()) {
-		// TODO: Call native method
-		printf("Native methods are not supported yet\n");
-		assert(false);
-		return 3;
-	}
-
-	Frame new_frame = Frame::create(target_method->code_attribute());
+	Frame new_frame = target_method->access_flags().is_native() ? Frame::create_native() : Frame::create(target_method->code_attribute());
 
 	for (int i = 0; i < argument_count; ++i) {
 		new_frame.store_local(i, arguments[i]);

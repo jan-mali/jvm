@@ -35,7 +35,12 @@ add_executable(jvm main.cpp
         VM/Instructions.cpp
         VM/Instructions.h
         Utils/HashTools.h
-        Utils/DescriptorTools.h)
+        Utils/DescriptorTools.h
+        VM/Native/NativeClass.h
+        VM/Native/JVM/JVMClass.cpp
+        VM/Native/JVM/JVMClass.h
+        VM/Native/NativeClassRegistry.h
+        VM/Native/NativeClassRegistry.cpp)
 
 # Java Runtime
 set(RUNTIME_DIR ${CMAKE_SOURCE_DIR}/Runtime)

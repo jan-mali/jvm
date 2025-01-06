@@ -1,6 +1,7 @@
 #include "VMThread.h"
 
 #include "Instructions.h"
+#include "VM.h"
 
 VMThread* VMThread::create(VM* vm, Class* _class, Method* method) {
 	auto* thread = new VMThread();
@@ -23,6 +24,23 @@ void VMThread::schedule() {
 	}
 
 	CodeAddress current_pc = pc();
+
+	Method* current_method = current_pc.method;
+	if (current_method->access_flags().is_native()) {
+		NativeClass* native_class = m_vm->native_class_registry()->get_native_class(current_pc._class->name());
+		assert(native_class);
+		bool ok = native_class->execute_function(current_method->name(), current_method->descriptor(), m_vm, this, current_frame(), current_pc._class, current_method);
+
+		if (!ok) {
+			printf("VMThread::schedule: NativeClass::execute_function failed\n");
+			assert(ok);
+		}
+
+		// NOTE: The function is expected to call thread->handle_return() to return control to the invoker
+
+		return;
+	}
+
 	const Attributes::CodeAttribute code_attr = current_pc.method->code_attribute();
 	assert(current_pc.instruction < code_attr.code_length);
 	const uint8_t opcode = code_attr.code[current_pc.instruction];

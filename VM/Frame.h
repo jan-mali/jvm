@@ -8,6 +8,7 @@
 class Frame {
 public:
 	static Frame create(const Attributes::CodeAttribute& code_attribute);
+	static Frame create_native();
 
 	void push_operand(const Variable operand) {
 		assert(m_operand_stack.size() < m_max_stack);

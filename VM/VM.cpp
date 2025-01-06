@@ -1,6 +1,15 @@
 #include "VM.h"
 
+#include "Native/JVM/JVMClass.h"
+
+void VM::register_native_classes() {
+	m_native_class_registry = new NativeClassRegistry();
+	m_native_class_registry->register_class(new JVMClass());
+}
+
 void VM::start(const char* class_name) {
+	register_native_classes();
+
 	Class* _class = m_bootstrap_class_loader.load_class(this, class_name);
 	assert(_class);
 
