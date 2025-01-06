@@ -9,7 +9,7 @@
 #include "../Utils/DescriptorTools.h"
 
 #define TODO(opcode, name) \
-	uint16_t Instructions::op$##name(VM*, VMThread*, Frame&, Class*, Method*) { printf("TODO: Implement opcode: " #name); assert(false); }
+	uint16_t Instructions::op$##name(VM*, VMThread*, Frame&, Class*, Method*) { printf("TODO: Implement opcode: " #name "\n"); assert(false); }
 
 struct MethodSearchResult {
 	Class* _class;
