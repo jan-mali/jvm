@@ -2,6 +2,7 @@
 
 void VM::start(const char* class_name) {
 	Class* _class = m_bootstrap_class_loader.load_class(this, class_name);
+	assert(_class);
 
 	m_method_area.dump();
 
