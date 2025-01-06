@@ -57,8 +57,9 @@ if(JAVA_FILES)
     set(JAVA_OUTPUT_DIR ${CMAKE_BINARY_DIR}/Runtime)
 
     # Create a custom target for Java compilation
+    # FIXME: Find a better way to compile the runtime (especially java.lang.Object)
     add_custom_target(CompileJava ALL
-            COMMAND ${Java_JAVAC_EXECUTABLE} -d ${JAVA_OUTPUT_DIR} ${JAVA_FILES}
+            COMMAND ${Java_JAVAC_EXECUTABLE} --patch-module java.base=${RUNTIME_DIR} -d ${JAVA_OUTPUT_DIR} ${JAVA_FILES}
             WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
             COMMENT "Compiling Java files in Runtime directory"
     )

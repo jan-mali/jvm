@@ -40,15 +40,18 @@ Class* BootstrapClassLoader::load_class(VM* vm, const char* class_name) {
 		return nullptr;
 	}
 
-	Class* _class = Class::from_class_file(this, class_file);
+	Class* _class = Class::from_class_file(vm, this, class_file);
 	if (!_class) {
 		// TODO: Throw exception
 		printf("Failed to load class %s\n", class_name);
 		abort();
 	}
 
-	m_initiating_loader_for_classes.push_back(class_name);
-	m_defining_loader_for_classes.push_back(class_name);
+	m_initiating_loader_for_classes.push_back(hash);
+
+	// TODO: Check for circular dependencies
+
+	m_defining_loader_for_classes.push_back(hash);
 
 	vm->add_class(_class);
 

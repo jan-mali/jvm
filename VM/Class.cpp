@@ -4,10 +4,11 @@
 #include <cstdio>
 #include <cstring>
 
+#include "VM.h"
 #include "../ClassFile/ClassFile.h"
 
 // https://docs.oracle.com/javase/specs/jvms/se23/html/jvms-5.html#jvms-5.3.5
-Class* Class::from_class_file(ClassLoader* loader, ClassFile* class_file) {
+Class* Class::from_class_file(VM* vm, ClassLoader* loader, ClassFile* class_file) {
 	auto* _class = new Class();
 	_class->m_initiating_loader = _class->m_defining_loader = loader;
 
@@ -18,6 +19,21 @@ Class* Class::from_class_file(ClassLoader* loader, ClassFile* class_file) {
 		Method* method = Method::from_method_info(_class->m_constant_pool, mi);
 		_class->m_methods.push_back(method);
 	});
+
+	if (strcmp(_class->name(), "java/lang/Object") != 0) {
+		ConstantPool::ConstantPoolEntry super_class_entry = class_file->constant_pool()->get_jvm_index(class_file->super_class());
+		assert(super_class_entry.tag == ConstantPool::Tag::Class);
+		uint16_t super_class_name_index = super_class_entry._class.name_index;
+
+		ConstantPool::ConstantPoolEntry super_class_name_entry = class_file->constant_pool()->get_jvm_index(super_class_name_index);
+		assert(super_class_name_entry.tag == ConstantPool::Tag::Utf8);
+		const char* super_class_name = super_class_name_entry.utf8.bytes;
+
+		// FIXME: This should really be done by the MethodArea, not the VM
+		Class* super_class = vm->get_class(super_class_name);
+		assert(super_class);
+		_class->m_super_class = super_class;
+	}
 
 	class_file->attributes()->for_each(_class->m_constant_pool, [](const char* attr_name, Attributes::Attribute& attr) {
 		switch (attr.attribute_type) {
