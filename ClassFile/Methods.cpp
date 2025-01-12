@@ -6,7 +6,7 @@ MethodsCreationResult Methods::create(const uint8_t* data, uint16_t Methods_coun
 	const uint8_t* ptr = data;
 
 	for (uint16_t i = 0; i < Methods_count; i++) {
-		MethodInfo mi {};
+		MethodInfo mi{};
 
 		const uint16_t raw_flags = (ptr[0] << 8) | ptr[1];
 		ptr += sizeof(uint16_t);
@@ -40,13 +40,12 @@ MethodsCreationResult Methods::create(const uint8_t* data, uint16_t Methods_coun
 
 	const size_t bytes = ptr - data;
 	return {
-		.methods = methods,
-		.bytes = bytes
-	};
+			.methods = methods,
+			.bytes = bytes};
 }
 
 void Methods::for_each(std::function<void(MethodInfo)> cb) {
-	for (auto mi: m_methods) {
+	for (auto mi : m_methods) {
 		cb(mi);
 	}
 }

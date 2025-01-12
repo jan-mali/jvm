@@ -1,15 +1,18 @@
 #include "Instructions.h"
 
+#include "../ClassFile/ConstantPool.h"
+#include "../Utils/DescriptorTools.h"
 #include "Class.h"
 #include "Frame.h"
 #include "Method.h"
 #include "VM.h"
 #include "VMThread.h"
-#include "../ClassFile/ConstantPool.h"
-#include "../Utils/DescriptorTools.h"
 
-#define TODO(opcode, name) \
-	uint16_t Instructions::op$##name(VM*, VMThread*, Frame&, Class*, Method*) { printf("TODO: Implement opcode: " #name "\n"); assert(false); }
+#define TODO(opcode, name)                                                      \
+	uint16_t Instructions::op$##name(VM*, VMThread*, Frame&, Class*, Method*) { \
+		printf("TODO: Implement opcode: " #name "\n");                          \
+		assert(false);                                                          \
+	}
 
 struct MethodSearchResult {
 	Class* _class;
@@ -17,7 +20,7 @@ struct MethodSearchResult {
 };
 
 static MethodSearchResult find_method(uint16_t cp_methodref_index, VM* vm, Class* _class) {
-	MethodSearchResult result {};
+	MethodSearchResult result{};
 
 	ConstantPool::ConstantPoolEntry methodref_entry = _class->constant_pool()->get_jvm_index(cp_methodref_index);
 	assert(methodref_entry.tag == ConstantPool::Tag::Methodref);
@@ -66,39 +69,39 @@ uint16_t Instructions::op$nop(VM* vm, VMThread* thread, Frame& frame, Class* _cl
 }
 TODO(1, aconst_null);
 uint16_t Instructions::op$iconst_m1(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
-	frame.push_operand({ Variable::Type::Int, -1 });
+	frame.push_operand({Variable::Type::Int, -1});
 	return 1;
 }
 uint16_t Instructions::op$iconst_0(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
-	frame.push_operand({ Variable::Type::Int, 0 });
+	frame.push_operand({Variable::Type::Int, 0});
 	return 1;
 }
 uint16_t Instructions::op$iconst_1(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
-	frame.push_operand({ Variable::Type::Int, 1 });
+	frame.push_operand({Variable::Type::Int, 1});
 	return 1;
 }
 uint16_t Instructions::op$iconst_2(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
-	frame.push_operand({ Variable::Type::Int, 2 });
+	frame.push_operand({Variable::Type::Int, 2});
 	return 1;
 }
 uint16_t Instructions::op$iconst_3(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
-	frame.push_operand({ Variable::Type::Int, 3 });
+	frame.push_operand({Variable::Type::Int, 3});
 	return 1;
 }
 uint16_t Instructions::op$iconst_4(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
-	frame.push_operand({ Variable::Type::Int, 4 });
+	frame.push_operand({Variable::Type::Int, 4});
 	return 1;
 }
 uint16_t Instructions::op$iconst_5(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
-	frame.push_operand({ Variable::Type::Int, 5 });
+	frame.push_operand({Variable::Type::Int, 5});
 	return 1;
 }
 uint16_t Instructions::op$lconst_0(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
-	frame.push_operand({ Variable::Type::Long, 0 });
+	frame.push_operand({Variable::Type::Long, 0});
 	return 1;
 }
 uint16_t Instructions::op$lconst_1(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
-	frame.push_operand({ Variable::Type::Long, 1 });
+	frame.push_operand({Variable::Type::Long, 1});
 	return 1;
 }
 TODO(11, fconst_0);
@@ -108,14 +111,14 @@ TODO(14, dconst_0);
 TODO(15, dconst_1);
 uint16_t Instructions::op$bipush(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
 	const uint8_t byte = method->code_attribute().code[thread->pc().instruction + 1];
-	const Variable value = { Variable::Type::Int, byte };
+	const Variable value = {Variable::Type::Int, byte};
 	frame.push_operand(value);
 	return 2;
 }
 uint16_t Instructions::op$sipush(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
 	const uint8_t byte1 = method->code_attribute().code[thread->pc().instruction + 1];
 	const uint8_t byte2 = method->code_attribute().code[thread->pc().instruction + 2];
-	const Variable value = { Variable::Type::Int, (byte1 << 8) | byte2 };
+	const Variable value = {Variable::Type::Int, (byte1 << 8) | byte2};
 	frame.push_operand(value);
 	return 3;
 }
@@ -128,7 +131,7 @@ uint16_t Instructions::op$ldc2_w(VM* vm, VMThread* thread, Frame& frame, Class* 
 	auto entry = _class->constant_pool()->get_jvm_index(index);
 	if (entry.tag == ConstantPool::Tag::Long) {
 		int64_t value = entry._long.value();
-		frame.push_operand({ Variable::Type::Long, value });
+		frame.push_operand({Variable::Type::Long, value});
 	} else {
 		// TODO: Implement other cases (double, symbolic reference)
 		assert(false);
@@ -316,14 +319,14 @@ uint16_t Instructions::op$swap(VM* vm, VMThread* thread, Frame& frame, Class* _c
 uint16_t Instructions::op$iadd(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
 	const Variable value2 = frame.pop_operand();
 	const Variable value1 = frame.pop_operand();
-	const Variable result = { Variable::Type::Int, value1.value + value2.value };
+	const Variable result = {Variable::Type::Int, value1.value + value2.value};
 	frame.push_operand(result);
 	return 1;
 }
 uint16_t Instructions::op$ladd(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
 	const Variable value2 = frame.pop_operand();
 	const Variable value1 = frame.pop_operand();
-	const Variable result = { Variable::Type::Long, value1.value + value2.value };
+	const Variable result = {Variable::Type::Long, value1.value + value2.value};
 	frame.push_operand(result);
 	return 1;
 }
@@ -332,14 +335,14 @@ TODO(99, dadd);
 uint16_t Instructions::op$isub(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
 	const Variable value2 = frame.pop_operand();
 	const Variable value1 = frame.pop_operand();
-	const Variable result = { Variable::Type::Int, value1.value - value2.value };
+	const Variable result = {Variable::Type::Int, value1.value - value2.value};
 	frame.push_operand(result);
 	return 1;
 }
 uint16_t Instructions::op$lsub(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
 	const Variable value2 = frame.pop_operand();
 	const Variable value1 = frame.pop_operand();
-	const Variable result = { Variable::Type::Long, value1.value - value2.value };
+	const Variable result = {Variable::Type::Long, value1.value - value2.value};
 	frame.push_operand(result);
 	return 1;
 }
@@ -348,14 +351,14 @@ TODO(103, dsub);
 uint16_t Instructions::op$imul(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
 	const Variable value2 = frame.pop_operand();
 	const Variable value1 = frame.pop_operand();
-	const Variable result = { Variable::Type::Int, value1.value * value2.value };
+	const Variable result = {Variable::Type::Int, value1.value * value2.value};
 	frame.push_operand(result);
 	return 1;
 }
 uint16_t Instructions::op$lmul(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
 	const Variable value2 = frame.pop_operand();
 	const Variable value1 = frame.pop_operand();
-	const Variable result = { Variable::Type::Long, value1.value * value2.value };
+	const Variable result = {Variable::Type::Long, value1.value * value2.value};
 	frame.push_operand(result);
 	return 1;
 }
@@ -371,13 +374,13 @@ TODO(114, frem);
 TODO(115, drem);
 uint16_t Instructions::op$ineg(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
 	const Variable value = frame.pop_operand();
-	const Variable result = { Variable::Type::Int, -value.value };
+	const Variable result = {Variable::Type::Int, -value.value};
 	frame.push_operand(result);
 	return 1;
 }
 uint16_t Instructions::op$lneg(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
 	const Variable value = frame.pop_operand();
-	const Variable result = { Variable::Type::Long, -value.value };
+	const Variable result = {Variable::Type::Long, -value.value};
 	frame.push_operand(result);
 	return 1;
 }
@@ -392,42 +395,42 @@ TODO(125, lushr);
 uint16_t Instructions::op$iand(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
 	const Variable value2 = frame.pop_operand();
 	const Variable value1 = frame.pop_operand();
-	const Variable result = { Variable::Type::Int, value1.value & value2.value };
+	const Variable result = {Variable::Type::Int, value1.value & value2.value};
 	frame.push_operand(result);
 	return 1;
 }
 uint16_t Instructions::op$land(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
 	const Variable value2 = frame.pop_operand();
 	const Variable value1 = frame.pop_operand();
-	const Variable result = { Variable::Type::Long, value1.value & value2.value };
+	const Variable result = {Variable::Type::Long, value1.value & value2.value};
 	frame.push_operand(result);
 	return 1;
 }
 uint16_t Instructions::op$ior(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
 	const Variable value2 = frame.pop_operand();
 	const Variable value1 = frame.pop_operand();
-	const Variable result = { Variable::Type::Int, value1.value | value2.value };
+	const Variable result = {Variable::Type::Int, value1.value | value2.value};
 	frame.push_operand(result);
 	return 1;
 }
 uint16_t Instructions::op$lor(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
 	const Variable value2 = frame.pop_operand();
 	const Variable value1 = frame.pop_operand();
-	const Variable result = { Variable::Type::Long, value1.value | value2.value };
+	const Variable result = {Variable::Type::Long, value1.value | value2.value};
 	frame.push_operand(result);
 	return 1;
 }
 uint16_t Instructions::op$ixor(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
 	const Variable value2 = frame.pop_operand();
 	const Variable value1 = frame.pop_operand();
-	const Variable result = { Variable::Type::Int, value1.value ^ value2.value };
+	const Variable result = {Variable::Type::Int, value1.value ^ value2.value};
 	frame.push_operand(result);
 	return 1;
 }
 uint16_t Instructions::op$lxor(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
 	const Variable value2 = frame.pop_operand();
 	const Variable value1 = frame.pop_operand();
-	const Variable result = { Variable::Type::Long, value1.value ^ value2.value };
+	const Variable result = {Variable::Type::Long, value1.value ^ value2.value};
 	frame.push_operand(result);
 	return 1;
 }
@@ -441,7 +444,7 @@ uint16_t Instructions::op$iinc(VM* vm, VMThread* thread, Frame& frame, Class* _c
 }
 uint16_t Instructions::op$i2l(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
 	const Variable value = frame.pop_operand();
-	const Variable result = { Variable::Type::Long, value.value };
+	const Variable result = {Variable::Type::Long, value.value};
 	frame.push_operand(result);
 	return 1;
 }
@@ -449,7 +452,7 @@ TODO(134, i2f);
 TODO(135, i2d);
 uint16_t Instructions::op$l2i(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
 	const Variable value = frame.pop_operand();
-	const Variable result = { Variable::Type::Int, static_cast<int32_t>(value.value & 0xFFFFFFFF) };
+	const Variable result = {Variable::Type::Int, static_cast<int32_t>(value.value & 0xFFFFFFFF)};
 	frame.push_operand(result);
 	return 1;
 }
@@ -463,14 +466,14 @@ TODO(143, d2l);
 TODO(144, d2f);
 uint16_t Instructions::op$i2b(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
 	const Variable value = frame.pop_operand();
-	const Variable result = { Variable::Type::Int, value.value & 0xFF };
+	const Variable result = {Variable::Type::Int, value.value & 0xFF};
 	frame.push_operand(result);
 	return 1;
 }
 TODO(146, i2c);
 uint16_t Instructions::op$i2s(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
 	const Variable value = frame.pop_operand();
-	const Variable result = { Variable::Type::Int, value.value & 0xFFFF };
+	const Variable result = {Variable::Type::Int, value.value & 0xFFFF};
 	frame.push_operand(result);
 	return 1;
 }
@@ -562,7 +565,7 @@ uint16_t Instructions::op$invokestatic(VM* vm, VMThread* thread, Frame& frame, C
 		new_frame.store_local(i, arguments[i]);
 	}
 
-	const CodeAddress new_pc = { target_class, target_method, 0 };
+	const CodeAddress new_pc = {target_class, target_method, 0};
 
 	thread->prepare_invocation(new_pc, new_frame);
 

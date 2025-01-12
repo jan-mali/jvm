@@ -4,7 +4,8 @@
 
 class AccessFlags {
 public:
-	explicit AccessFlags(const uint16_t flags) : m_flags(flags) {}
+	explicit AccessFlags(const uint16_t flags)
+		: m_flags(flags) {}
 
 	[[nodiscard]] bool is_public() const { return (m_flags & 0x0001) != 0; }
 	[[nodiscard]] bool is_private() const { return (m_flags & 0x0002) != 0; }
@@ -28,102 +29,139 @@ public:
 
 	[[nodiscard]] uint16_t flags() const { return m_flags; }
 
-	void dump() const
-	{
+	void dump() const {
 		bool first = true;
 		if (is_public()) {
-			if (first) first = false;
-			else printf(" ");
+			if (first)
+				first = false;
+			else
+				printf(" ");
 			printf("PUBLIC");
 		}
 		if (is_private()) {
-			if (first) first = false;
-			else printf(" ");
+			if (first)
+				first = false;
+			else
+				printf(" ");
 			printf("PRIVATE");
 		}
 		if (is_protected()) {
-			if (first) first = false;
-			else printf(" ");
+			if (first)
+				first = false;
+			else
+				printf(" ");
 			printf("PROTECTED");
 		}
 		if (is_static()) {
-			if (first) first = false;
-			else printf(" ");
+			if (first)
+				first = false;
+			else
+				printf(" ");
 			printf("STATIC");
 		}
 		if (is_final()) {
-			if (first) first = false;
-			else printf(" ");
+			if (first)
+				first = false;
+			else
+				printf(" ");
 			printf("FINAL");
 		}
 		if (is_super()) {
-			if (first) first = false;
-			else printf(" ");
+			if (first)
+				first = false;
+			else
+				printf(" ");
 			printf("[CLASS]SUPER");
 		}
 		if (is_synchronized()) {
-			if (first) first = false;
-			else printf(" ");
+			if (first)
+				first = false;
+			else
+				printf(" ");
 			printf("[METHOD]SYNCHRONIZED");
 		}
 		if (is_volatile()) {
-			if (first) first = false;
-			else printf(" ");
+			if (first)
+				first = false;
+			else
+				printf(" ");
 			printf("[CLASS]VOLATILE");
 		}
 		if (is_bridge()) {
-			if (first) first = false;
-			else printf(" ");
+			if (first)
+				first = false;
+			else
+				printf(" ");
 			printf("[METHOD]BRIDGE");
 		}
 		if (is_transient()) {
-			if (first) first = false;
-			else printf(" ");
+			if (first)
+				first = false;
+			else
+				printf(" ");
 			printf("[CLASS]TRANSIENT");
 		}
 		if (is_varargs()) {
-			if (first) first = false;
-			else printf(" ");
+			if (first)
+				first = false;
+			else
+				printf(" ");
 			printf("[METHOD]VARARGS");
 		}
 		if (is_native()) {
-			if (first) first = false;
-			else printf(" ");
+			if (first)
+				first = false;
+			else
+				printf(" ");
 			printf("NATIVE");
 		}
 		if (is_interface()) {
-			if (first) first = false;
-			else printf(" ");
+			if (first)
+				first = false;
+			else
+				printf(" ");
 			printf("INTERFACE");
 		}
 		if (is_abstract()) {
-			if (first) first = false;
-			else printf(" ");
+			if (first)
+				first = false;
+			else
+				printf(" ");
 			printf("ABSTRACT");
 		}
 		if (is_strict()) {
-			if (first) first = false;
-			else printf(" ");
+			if (first)
+				first = false;
+			else
+				printf(" ");
 			printf("STRICT");
 		}
 		if (is_synthetic()) {
-			if (first) first = false;
-			else printf(" ");
+			if (first)
+				first = false;
+			else
+				printf(" ");
 			printf("SYNTHETIC");
 		}
 		if (is_annotation()) {
-			if (first) first = false;
-			else printf(" ");
+			if (first)
+				first = false;
+			else
+				printf(" ");
 			printf("ANNOTATION");
 		}
 		if (is_enum()) {
-			if (first) first = false;
-			else printf(" ");
+			if (first)
+				first = false;
+			else
+				printf(" ");
 			printf("ENUM");
 		}
 		if (is_module()) {
-			if (first) first = false;
-			else printf(" ");
+			if (first)
+				first = false;
+			else
+				printf(" ");
 			printf("MODULE");
 		}
 	}

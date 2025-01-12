@@ -17,7 +17,7 @@ AttributesCreationResult Attributes::create(const uint8_t* data, const uint16_t 
 		const uint32_t attribute_length = (ptr[0] << 24) + (ptr[1] << 16) + (ptr[2] << 8) + ptr[3];
 		ptr += sizeof(uint32_t);
 
-		RawAttribute attribute {};
+		RawAttribute attribute{};
 		attribute.attribute_name_index = attribute_name_index;
 		attribute.attribute_length = attribute_length;
 
@@ -33,13 +33,12 @@ AttributesCreationResult Attributes::create(const uint8_t* data, const uint16_t 
 
 	const size_t bytes = ptr - data;
 	return {
-		.attributes = attributes,
-		.bytes = bytes
-	};
+			.attributes = attributes,
+			.bytes = bytes};
 }
 
-Attributes::CodeAttribute Attributes::CodeAttribute::from_data(const uint8_t *data) {
-	CodeAttribute attr {};
+Attributes::CodeAttribute Attributes::CodeAttribute::from_data(const uint8_t* data) {
+	CodeAttribute attr{};
 
 	const uint8_t* ptr = data;
 
@@ -72,12 +71,10 @@ Attributes::CodeAttribute Attributes::CodeAttribute::from_data(const uint8_t *da
 		uint16_t catch_type = (ptr[0] << 8) + ptr[1];
 		ptr += sizeof(uint16_t);
 
-		attr.exception_table.push_back({
-			.start_pc = start_pc,
-			.end_pc = end_pc,
-			.handler_pc = handler_pc,
-			.catch_type = catch_type
-		});
+		attr.exception_table.push_back({.start_pc = start_pc,
+										.end_pc = end_pc,
+										.handler_pc = handler_pc,
+										.catch_type = catch_type});
 	}
 
 	attr.attributes_count = (ptr[0] << 8) + ptr[1];
@@ -89,11 +86,11 @@ Attributes::CodeAttribute Attributes::CodeAttribute::from_data(const uint8_t *da
 	attr.attributes = attribute_creation_result.attributes;
 	ptr += attribute_creation_result.bytes;
 
-	return  attr;
+	return attr;
 }
 
-Attributes::LineNumberTable Attributes::LineNumberTable::from_data(const uint8_t *data) {
-	LineNumberTable lnt {};
+Attributes::LineNumberTable Attributes::LineNumberTable::from_data(const uint8_t* data) {
+	LineNumberTable lnt{};
 
 	const uint8_t* ptr = data;
 
@@ -107,10 +104,8 @@ Attributes::LineNumberTable Attributes::LineNumberTable::from_data(const uint8_t
 		uint16_t line_number = (ptr[0] << 8) + ptr[1];
 		ptr += sizeof(uint16_t);
 
-		lnt.line_number_table.push_back({
-			.start_pc = start_pc,
-			.line_number = line_number
-		});
+		lnt.line_number_table.push_back({.start_pc = start_pc,
+										 .line_number = line_number});
 	}
 
 	return lnt;
@@ -118,26 +113,26 @@ Attributes::LineNumberTable Attributes::LineNumberTable::from_data(const uint8_t
 
 Attributes::Attribute::~Attribute() {
 	switch (attribute_type) {
-		case PredefinedAttributeType::None:
-			custom.~CustomAttribute();
-			break;
-		case PredefinedAttributeType::Code:
-			code.~CodeAttribute();
-			break;
-		case PredefinedAttributeType::LineNumberTable:
-			line_number_table.~LineNumberTable();
-			break;
-		default:
-			assert(false);
+	case PredefinedAttributeType::None:
+		custom.~CustomAttribute();
+		break;
+	case PredefinedAttributeType::Code:
+		code.~CodeAttribute();
+		break;
+	case PredefinedAttributeType::LineNumberTable:
+		line_number_table.~LineNumberTable();
+		break;
+	default:
+		assert(false);
 	}
 }
 
-void Attributes::for_each(ConstantPool* constant_pool, std::function<void(const char* , Attribute&)> cb) const {
-	for (auto raw_attr: m_attributes) {
+void Attributes::for_each(ConstantPool* constant_pool, std::function<void(const char*, Attribute&)> cb) const {
+	for (auto raw_attr : m_attributes) {
 		ConstantPool::ConstantPoolEntry name_entry = constant_pool->get_jvm_index(raw_attr.attribute_name_index);
 		assert(name_entry.tag == ConstantPool::Tag::Utf8);
 		const char* name = name_entry.utf8.bytes;
-		Attribute attribute {};
+		Attribute attribute{};
 		attribute.attribute_type = PredefinedAttributeType::None;
 		if (strcmp(name, "Code") == 0) {
 			attribute.attribute_type = PredefinedAttributeType::Code;
@@ -148,9 +143,8 @@ void Attributes::for_each(ConstantPool* constant_pool, std::function<void(const 
 		} else {
 			attribute.attribute_type = PredefinedAttributeType::None;
 			attribute.custom = {
-				.length = raw_attr.attribute_length,
-				.data = raw_attr.info
-			};
+					.length = raw_attr.attribute_length,
+					.data = raw_attr.info};
 		}
 		cb(name, attribute);
 	}

@@ -8,7 +8,7 @@ void MethodArea::add_class(Class* _class) {
 
 void MethodArea::dump() const {
 	printf("MethodArea::dump()\n");
-	for (auto _class: m_classes) {
+	for (auto _class : m_classes) {
 		_class->dump();
 	}
 }

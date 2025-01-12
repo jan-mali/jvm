@@ -5,7 +5,7 @@
 
 // Spec link: https://docs.oracle.com/javase/specs/jvms/se23/html/index.html
 int main() {
-    const auto vm = new VM();
-    vm->start("Test");
-    return 0;
+	const auto vm = new VM();
+	vm->start("Test");
+	return 0;
 }

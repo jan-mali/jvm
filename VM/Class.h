@@ -1,6 +1,6 @@
 #pragma once
-#include "Method.h"
 #include "../ClassFile/ConstantPool.h"
+#include "Method.h"
 
 class VM;
 class MethodArea;
@@ -17,6 +17,7 @@ public:
 	[[nodiscard]] const char* name() const;
 	[[nodiscard]] ConstantPool* constant_pool() const { return m_constant_pool; }
 	[[nodiscard]] Class* super_class() const { return m_super_class; }
+
 private:
 	Class() = default;
 
@@ -26,7 +27,7 @@ private:
 	ClassFile* m_class_file = nullptr;
 	ConstantPool* m_constant_pool = nullptr;
 
-	std::vector<Method*> m_methods {};
+	std::vector<Method*> m_methods{};
 
 	Class* m_super_class = nullptr;
 

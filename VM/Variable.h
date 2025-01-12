@@ -3,15 +3,15 @@
 #include <cstdint>
 
 #define __ENUMERATE_VARIABLE_TYPES \
-	__ENUM(Boolean) \
-	__ENUM(Byte) \
-	__ENUM(Char) \
-	__ENUM(Short) \
-	__ENUM(Int) \
-	__ENUM(Float) \
-	__ENUM(Reference) \
-	__ENUM(ReturnAddress) \
-	__ENUM(Long) \
+	__ENUM(Boolean)                \
+	__ENUM(Byte)                   \
+	__ENUM(Char)                   \
+	__ENUM(Short)                  \
+	__ENUM(Int)                    \
+	__ENUM(Float)                  \
+	__ENUM(Reference)              \
+	__ENUM(ReturnAddress)          \
+	__ENUM(Long)                   \
 	__ENUM(Double)
 
 struct Variable {
@@ -24,21 +24,23 @@ struct Variable {
 
 	static const char* type_name(Type type) {
 		switch (type) {
-#define __ENUM(type) case Type::type: return #type;
+#define __ENUM(type) \
+	case Type::type: \
+		return #type;
 			__ENUMERATE_VARIABLE_TYPES
 #undef __ENUM
-			default:
-				return "Invalid";
+		default:
+			return "Invalid";
 		}
 	}
 
 	[[nodiscard]] uint8_t computational_type() const {
 		switch (type) {
-			case Type::Double:
-			case Type::Long:
-				return 2;
-			default:
-				return 1;
+		case Type::Double:
+		case Type::Long:
+			return 2;
+		default:
+			return 1;
 		}
 	}
 

@@ -14,13 +14,14 @@ public:
 	[[nodiscard]] AccessFlags access_flags() const { return m_access_flags; }
 	[[nodiscard]] const char* name() const { return m_name; }
 	[[nodiscard]] const char* descriptor() const { return m_descriptor; }
+
 private:
 	Method() = default;
 
-	AccessFlags m_access_flags { 0 };
+	AccessFlags m_access_flags{0};
 	const char* m_name = nullptr;
 	const char* m_descriptor = nullptr;
 
-	Attributes::CodeAttribute m_code_attribute {};
-	Attributes::LineNumberTable m_line_number_table_attribute {};
+	Attributes::CodeAttribute m_code_attribute{};
+	Attributes::LineNumberTable m_line_number_table_attribute{};
 };

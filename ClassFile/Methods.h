@@ -17,7 +17,7 @@ public:
 	static MethodsCreationResult create(const uint8_t* data, uint16_t fields_count);
 
 	struct MethodInfo {
-		AccessFlags access_flags { 0 };
+		AccessFlags access_flags{0};
 		uint16_t name_index;
 		uint16_t descriptor_index;
 		uint16_t attributes_count;
@@ -28,5 +28,5 @@ public:
 
 private:
 	Methods() = default;
-	std::vector<MethodInfo> m_methods {};
+	std::vector<MethodInfo> m_methods{};
 };

@@ -2,8 +2,8 @@
 #include <cassert>
 #include <vector>
 
-#include "Variable.h"
 #include "../ClassFile/Attributes.h"
+#include "Variable.h"
 
 class Frame {
 public:
@@ -35,10 +35,11 @@ public:
 		assert(index < m_max_locals);
 		return m_local_variables[index];
 	}
+
 private:
 	Frame() = default;
 	uint16_t m_max_locals = 0;
 	uint16_t m_max_stack = 0;
-	std::vector<Variable> m_local_variables {};
-	std::vector<Variable> m_operand_stack {};
+	std::vector<Variable> m_local_variables{};
+	std::vector<Variable> m_operand_stack{};
 };

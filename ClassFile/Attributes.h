@@ -1,39 +1,39 @@
 #pragma once
-#include <cstdint>
 #include <cstddef>
+#include <cstdint>
 #include <functional>
 #include <vector>
 
-#define __ENUMERATE_PREDEFINED_ATTRIBUTES \
-	__ENUM(ConstantValue) \
-	__ENUM(Code) \
-	__ENUM(StackMapTable) \
-	__ENUM(BootstrapMethods) \
-	__ENUM(NestHost) \
-	__ENUM(NestMembers) \
-	__ENUM(PermittedSubclasses) \
-	__ENUM(Exceptions) \
-	__ENUM(InnerClasses) \
-	__ENUM(EnclosingMethod) \
-	__ENUM(Synthetic) \
-	__ENUM(Signature) \
-	__ENUM(Record) \
-	__ENUM(SourceFile) \
-	__ENUM(LineNumberTable) \
-	__ENUM(LocalVariableTable) \
-	__ENUM(LocalVariableTypeTable) \
-	__ENUM(SourceDebugExtension) \
-	__ENUM(Deprecated) \
-	__ENUM(RuntimeVisibleAnnotations) \
-	__ENUM(RuntimeInvisibleAnnotations) \
-	__ENUM(RuntimeVisibleParameterAnnotations) \
+#define __ENUMERATE_PREDEFINED_ATTRIBUTES        \
+	__ENUM(ConstantValue)                        \
+	__ENUM(Code)                                 \
+	__ENUM(StackMapTable)                        \
+	__ENUM(BootstrapMethods)                     \
+	__ENUM(NestHost)                             \
+	__ENUM(NestMembers)                          \
+	__ENUM(PermittedSubclasses)                  \
+	__ENUM(Exceptions)                           \
+	__ENUM(InnerClasses)                         \
+	__ENUM(EnclosingMethod)                      \
+	__ENUM(Synthetic)                            \
+	__ENUM(Signature)                            \
+	__ENUM(Record)                               \
+	__ENUM(SourceFile)                           \
+	__ENUM(LineNumberTable)                      \
+	__ENUM(LocalVariableTable)                   \
+	__ENUM(LocalVariableTypeTable)               \
+	__ENUM(SourceDebugExtension)                 \
+	__ENUM(Deprecated)                           \
+	__ENUM(RuntimeVisibleAnnotations)            \
+	__ENUM(RuntimeInvisibleAnnotations)          \
+	__ENUM(RuntimeVisibleParameterAnnotations)   \
 	__ENUM(RuntimeInvisibleParameterAnnotations) \
-	__ENUM(RuntimeVisibleTypeAnnotations) \
-	__ENUM(RuntimeInvisibleTypeAnnotations) \
-	__ENUM(AnnotationDefault) \
-	__ENUM(MethodParameters) \
-	__ENUM(Module) \
-	__ENUM(ModulePackages) \
+	__ENUM(RuntimeVisibleTypeAnnotations)        \
+	__ENUM(RuntimeInvisibleTypeAnnotations)      \
+	__ENUM(AnnotationDefault)                    \
+	__ENUM(MethodParameters)                     \
+	__ENUM(Module)                               \
+	__ENUM(ModulePackages)                       \
 	__ENUM(ModuleMainClass)
 
 class ConstantPool;
@@ -62,11 +62,13 @@ public:
 
 	static const char* predefined_attribute_name(const PredefinedAttributeType type) {
 		switch (type) {
-#define __ENUM(name) case PredefinedAttributeType::name: return #name;
+#define __ENUM(name)                    \
+	case PredefinedAttributeType::name: \
+		return #name;
 			__ENUMERATE_PREDEFINED_ATTRIBUTES
 #undef __ENUM
-			default:
-				return "<Invalid PredefinedAttributeType>";
+		default:
+			return "<Invalid PredefinedAttributeType>";
 		}
 	}
 
@@ -88,7 +90,7 @@ public:
 		uint32_t code_length = 0;
 		const uint8_t* code = nullptr;
 		uint16_t exception_table_length = 0;
-		std::vector<ExceptionTableEntry> exception_table {};
+		std::vector<ExceptionTableEntry> exception_table{};
 		uint16_t attributes_count = 0;
 		Attributes* attributes = nullptr;
 
@@ -102,7 +104,7 @@ public:
 			uint16_t line_number = 0;
 		};
 		uint16_t line_number_table_length = 0;
-		std::vector<LineNumberTableEntry> line_number_table {};
+		std::vector<LineNumberTableEntry> line_number_table{};
 
 		static LineNumberTable from_data(const uint8_t* data);
 	};
@@ -121,7 +123,7 @@ public:
 
 private:
 	Attributes() = default;
-	std::vector<RawAttribute> m_attributes {};
+	std::vector<RawAttribute> m_attributes{};
 };
 
 #undef __ENUMERATE_PREDEFINED_ATTRIBUTES

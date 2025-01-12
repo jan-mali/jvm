@@ -10,6 +10,7 @@ class VM;
 
 class VMThread {
 	friend class VM;
+
 public:
 	static VMThread* create(VM* vm, Class* _class, Method* method);
 	void schedule();
@@ -48,5 +49,5 @@ private:
 	bool m_is_terminating = false;
 
 	bool m_is_next_pc_ready = false;
-	CodeAddress m_next_pc {};
+	CodeAddress m_next_pc{};
 };

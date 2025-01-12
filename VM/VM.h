@@ -1,14 +1,13 @@
 #pragma once
-#include "MethodArea.h"
 #include "../Loader/BootstrapClassLoader.h"
-#include "VMThread.h"
+#include "MethodArea.h"
 #include "Native/NativeClassRegistry.h"
+#include "VMThread.h"
 
 class Class;
 
 class VM {
 public:
-
 	void register_native_classes();
 	void start(const char* class_name);
 	void add_class(Class* _class);

@@ -5,13 +5,13 @@
 #include <cstring>
 
 #include "../ClassFile/ClassFile.h"
-#include "../VM/Class.h"
 #include "../Utils/HashTools.h"
+#include "../VM/Class.h"
 #include "../VM/VM.h"
 
 Class* BootstrapClassLoader::load_class(VM* vm, const char* class_name) {
 	// Check if the class was loaded before
-	uint64_t hash = HashTools::fnv1a_hash(reinterpret_cast<const uint8_t *>(class_name), strlen(class_name));
+	uint64_t hash = HashTools::fnv1a_hash(reinterpret_cast<const uint8_t*>(class_name), strlen(class_name));
 
 	if (m_loaded_classes.contains(hash)) {
 		printf("Class %s already loaded\n", class_name);
@@ -20,7 +20,7 @@ Class* BootstrapClassLoader::load_class(VM* vm, const char* class_name) {
 
 	// TODO: Properly look for the class
 
-	auto class_path = static_cast<char *>(malloc(strlen(class_name) + 15));
+	auto class_path = static_cast<char*>(malloc(strlen(class_name) + 15));
 	strcpy(class_path, "Runtime/");
 	strcat(class_path, class_name);
 	strcat(class_path, ".class");

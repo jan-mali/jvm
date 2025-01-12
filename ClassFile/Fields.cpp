@@ -6,7 +6,7 @@ FieldsCreationResult Fields::create(const uint8_t* data, uint16_t fields_count) 
 	const uint8_t* ptr = data;
 
 	for (uint16_t i = 0; i < fields_count; i++) {
-		FieldInfo fi {};
+		FieldInfo fi{};
 
 		const uint16_t raw_flags = (ptr[0] << 8) | ptr[1];
 		ptr += sizeof(uint16_t);
@@ -40,7 +40,6 @@ FieldsCreationResult Fields::create(const uint8_t* data, uint16_t fields_count) 
 
 	const size_t bytes = ptr - data;
 	return {
-		.fields = fields,
-		.bytes = bytes
-	};
+			.fields = fields,
+			.bytes = bytes};
 }
