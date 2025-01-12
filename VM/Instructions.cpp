@@ -106,11 +106,22 @@ uint16_t Instructions::op$bipush(VM* vm, VMThread* thread, Frame& frame, Class* 
 	frame.push_operand(value);
 	return 2;
 }
-TODO(17, sipush);
+uint16_t Instructions::op$sipush(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	const uint8_t byte1 = method->code_attribute().code[thread->pc().instruction + 1];
+	const uint8_t byte2 = method->code_attribute().code[thread->pc().instruction + 2];
+	const Variable value = { Variable::Type::Int, (byte1 << 8) | byte2 };
+	frame.push_operand(value);
+	return 3;
+}
 TODO(18, ldc);
 TODO(19, ldc_w);
 TODO(20, ldc2_w);
-TODO(21, iload);
+uint16_t Instructions::op$iload(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	const uint8_t index = method->code_attribute().code[thread->pc().instruction + 1];
+	const Variable value = frame.read_local(index);
+	frame.push_operand(value);
+	return 2;
+}
 TODO(22, lload);
 TODO(23, fload);
 TODO(24, dload);
@@ -159,7 +170,12 @@ TODO(50, aaload);
 TODO(51, baload);
 TODO(52, caload);
 TODO(53, saload);
-TODO(54, istore);
+uint16_t Instructions::op$istore(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	const uint8_t index = method->code_attribute().code[thread->pc().instruction + 1];
+	const Variable value = frame.pop_operand();
+	frame.store_local(index, value);
+	return 2;
+}
 TODO(55, lstore);
 TODO(56, fstore);
 TODO(57, dstore);
@@ -208,7 +224,10 @@ TODO(83, aastore);
 TODO(84, bastore);
 TODO(85, castore);
 TODO(86, sastore);
-TODO(87, pop);
+uint16_t Instructions::op$pop(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	frame.pop_operand();
+	return 1;
+}
 TODO(88, pop2);
 TODO(89, dup);
 TODO(90, dup_x1);
@@ -216,7 +235,13 @@ TODO(91, dup_x2);
 TODO(92, dup2);
 TODO(93, dup2_x1);
 TODO(94, dup2_x2);
-TODO(95, swap);
+uint16_t Instructions::op$swap(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	const Variable value1 = frame.pop_operand();
+	const Variable value2 = frame.pop_operand();
+	frame.push_operand(value1);
+	frame.push_operand(value2);
+	return 1;
+}
 uint16_t Instructions::op$iadd(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
 	const Variable value2 = frame.pop_operand();
 	const Variable value1 = frame.pop_operand();
@@ -255,7 +280,12 @@ TODO(112, irem);
 TODO(113, lrem);
 TODO(114, frem);
 TODO(115, drem);
-TODO(116, ineg);
+uint16_t Instructions::op$ineg(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	const Variable value = frame.pop_operand();
+	const Variable result = { Variable::Type::Int, -value.value };
+	frame.push_operand(result);
+	return 1;
+}
 TODO(117, lneg);
 TODO(118, fneg);
 TODO(119, dneg);
@@ -265,11 +295,29 @@ TODO(122, ishr);
 TODO(123, lshr);
 TODO(124, iushr);
 TODO(125, lushr);
-TODO(126, iand);
+uint16_t Instructions::op$iand(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	const Variable value2 = frame.pop_operand();
+	const Variable value1 = frame.pop_operand();
+	const Variable result = { Variable::Type::Int, value1.value & value2.value };
+	frame.push_operand(result);
+	return 1;
+}
 TODO(127, land);
-TODO(128, ior);
+uint16_t Instructions::op$ior(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	const Variable value2 = frame.pop_operand();
+	const Variable value1 = frame.pop_operand();
+	const Variable result = { Variable::Type::Int, value1.value | value2.value };
+	frame.push_operand(result);
+	return 1;
+}
 TODO(129, lor);
-TODO(130, ixor);
+uint16_t Instructions::op$ixor(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	const Variable value2 = frame.pop_operand();
+	const Variable value1 = frame.pop_operand();
+	const Variable result = { Variable::Type::Int, value1.value ^ value2.value };
+	frame.push_operand(result);
+	return 1;
+}
 TODO(131, lxor);
 uint16_t Instructions::op$iinc(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
 	uint8_t index = method->code_attribute().code[thread->pc().instruction + 1];
@@ -291,9 +339,19 @@ TODO(141, f2d);
 TODO(142, d2i);
 TODO(143, d2l);
 TODO(144, d2f);
-TODO(145, i2b);
+uint16_t Instructions::op$i2b(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	const Variable value = frame.pop_operand();
+	const Variable result = { Variable::Type::Int, value.value & 0xFF };
+	frame.push_operand(result);
+	return 1;
+}
 TODO(146, i2c);
-TODO(147, i2s);
+uint16_t Instructions::op$i2s(VM* vm, VMThread* thread, Frame& frame, Class* _class, Method* method) {
+	const Variable value = frame.pop_operand();
+	const Variable result = { Variable::Type::Int, value.value & 0xFFFF };
+	frame.push_operand(result);
+	return 1;
+}
 TODO(148, lcmp);
 TODO(149, fcmpl);
 TODO(150, fcmpg);
