@@ -4,6 +4,7 @@
 
 // https://docs.oracle.com/javase/specs/jvms/se23/html/jvms-4.html#jvms-4.4-140
 #define __ENUMERATE_CONSTANT_POOL_TAGS \
+    __ENUM(Invalid, 0) \
     __ENUM(Class, 7) \
     __ENUM(Fieldref, 9) \
     __ENUM(Methodref, 10) \
@@ -105,7 +106,9 @@ public:
         Long(const Tag tag, const uint32_t high_bytes, const uint32_t low_bytes) : ConstantPoolEntryBase(tag), high_bytes(high_bytes), low_bytes(low_bytes) {}
         uint32_t high_bytes;
         uint32_t low_bytes;
-        [[nodiscard]] int64_t value() const; // TODO
+        [[nodiscard]] int64_t value() const {
+	        return static_cast<int64_t>(high_bytes) << 32 | static_cast<int64_t>(low_bytes);
+        }
     };
 
     struct Double : ConstantPoolEntryBase {

@@ -12,8 +12,7 @@
 	__ENUM(Reference) \
 	__ENUM(ReturnAddress) \
 	__ENUM(Long) \
-	__ENUM(Double) \
-	__ENUM(InternalLongOrDoubleSecondSegment)
+	__ENUM(Double)
 
 struct Variable {
 	enum class Type {
@@ -33,8 +32,22 @@ struct Variable {
 		}
 	}
 
+	[[nodiscard]] uint8_t computational_type() const {
+		switch (type) {
+			case Type::Double:
+			case Type::Long:
+				return 2;
+			default:
+				return 1;
+		}
+	}
+
+	[[nodiscard]] uint8_t stack_depth() const {
+		return computational_type();
+	}
+
 	Type type = Type::Invalid;
-	int32_t value = 0;
+	int64_t value = 0; // FIXME: Maybe a union would be better?
 };
 
 #undef __ENUMERATE_VARIABLE_TYPES
