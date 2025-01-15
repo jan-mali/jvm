@@ -22,7 +22,6 @@ ClassFile* ClassFile::create(const uint8_t* data) {
 		printf("ClassFile::create: invalid magic number 0x%x\n", magic);
 		return nullptr;
 	}
-	printf("ClassFile::create: magic number 0x%x\n", magic);
 
 	const uint16_t minor_version = (ptr[0] << 8) | ptr[1];
 	ptr += sizeof(uint16_t);
@@ -31,9 +30,6 @@ ClassFile* ClassFile::create(const uint8_t* data) {
 	const uint16_t major_version = (ptr[0] << 8) | ptr[1];
 	ptr += sizeof(uint16_t);
 	class_file->m_minor_version = major_version;
-
-	printf("ClassFile::create: major_version %d\n", major_version);
-	printf("ClassFile::create: minor_version %d\n", minor_version);
 
 	if (major_version > 67) {
 		printf("ClassFile::create: unsupported major version %d\n", major_version);
@@ -49,7 +45,6 @@ ClassFile* ClassFile::create(const uint8_t* data) {
 	const uint16_t constant_pool_count = ((ptr[0] << 8) | ptr[1]) - 1;
 	ptr += sizeof(uint16_t);
 	class_file->m_constant_pool_count = constant_pool_count;
-	printf("ClassFile::create: constant_pool_count %d\n", constant_pool_count);
 
 	ConstantPoolCreationResult constant_pool_creation_result = ConstantPool::create(ptr, constant_pool_count);
 	if (!constant_pool_creation_result.pool) {
@@ -62,6 +57,7 @@ ClassFile* ClassFile::create(const uint8_t* data) {
 
 	class_file->m_constant_pool = constant_pool;
 
+	// TODO: Remove this once we can dump a Class
 	printf("ClassFile::create: constant pool creation successful\n");
 	printf("Loaded following entries:\n");
 	constant_pool->dump(1);
@@ -70,6 +66,7 @@ ClassFile* ClassFile::create(const uint8_t* data) {
 	ptr += sizeof(uint16_t);
 	const auto access_flags = AccessFlags(raw_flags);
 
+	// TODO: Remove this once we can dump a Class
 	printf("ClassFile::create: access_flags: ");
 	access_flags.dump();
 	printf("\n");
@@ -91,13 +88,9 @@ ClassFile* ClassFile::create(const uint8_t* data) {
 	class_file->m_this_class = this_class;
 	class_file->m_super_class = super_class;
 
-	printf("ClassFile::create: this_class %d\n", this_class);
-	printf("ClassFile::create: super_class %d\n", super_class);
-
 	uint16_t interfaces_count = (ptr[0] << 8) | ptr[1];
 	ptr += sizeof(uint16_t);
 	class_file->m_interfaces_count = interfaces_count;
-	printf("ClassFile::create: interfaces_count %d\n", interfaces_count);
 
 	auto* interfaces = static_cast<uint16_t*>(calloc(interfaces_count, sizeof(uint16_t)));
 	if (!interfaces) {
@@ -106,6 +99,7 @@ ClassFile* ClassFile::create(const uint8_t* data) {
 		return nullptr;
 	}
 
+	// TODO: Remove this once we begin loading interfaces
 	for (uint16_t i = 0; i < interfaces_count; i++) {
 		const uint16_t interface = (ptr[0] << 8) | ptr[1];
 		ptr += sizeof(uint16_t);
@@ -118,7 +112,6 @@ ClassFile* ClassFile::create(const uint8_t* data) {
 	uint16_t fields_count = (ptr[0] << 8) | ptr[1];
 	ptr += sizeof(uint16_t);
 	class_file->m_fields_count = fields_count;
-	printf("ClassFile::create: fields_count %d\n", fields_count);
 
 	FieldsCreationResult fields_creation_result = Fields::create(ptr, fields_count);
 	if (!fields_creation_result.fields) {
@@ -132,12 +125,9 @@ ClassFile* ClassFile::create(const uint8_t* data) {
 
 	class_file->m_fields = fields;
 
-	printf("ClassFile::create: fields creation successful\n");
-
 	uint16_t methods_count = (ptr[0] << 8) | ptr[1];
 	ptr += sizeof(uint16_t);
 	class_file->m_methods_count = methods_count;
-	printf("ClassFile::create: methods_count %d\n", methods_count);
 
 	MethodsCreationResult methods_creation_result = Methods::create(ptr, methods_count);
 	if (!methods_creation_result.methods) {
@@ -151,11 +141,8 @@ ClassFile* ClassFile::create(const uint8_t* data) {
 
 	class_file->m_methods = methods;
 
-	printf("ClassFile::create: methods creation successful\n");
-
 	uint16_t attributes_count = (ptr[0] << 8) | ptr[1];
 	ptr += sizeof(uint16_t);
-	printf("ClassFile::create: attributes_count %d\n", attributes_count);
 
 	AttributesCreationResult attributes_creation_result = Attributes::create(ptr, attributes_count);
 	if (!attributes_creation_result.attributes) {
@@ -166,8 +153,6 @@ ClassFile* ClassFile::create(const uint8_t* data) {
 	Attributes* attributes = attributes_creation_result.attributes;
 	ptr += attributes_creation_result.bytes;
 	class_file->m_attributes = attributes;
-
-	printf("ClassFile::create: attributes creation successful\n");
 
 	// TODO: Class file verification & type checking
 
