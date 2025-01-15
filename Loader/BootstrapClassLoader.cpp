@@ -3,9 +3,11 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <linux/limits.h>
 
 #include "../ClassFile/ClassFile.h"
 #include "../Utils/HashTools.h"
+#include "../Utils/PathTools.h"
 #include "../VM/Class.h"
 #include "../VM/VM.h"
 
@@ -20,10 +22,19 @@ Class* BootstrapClassLoader::load_class(VM* vm, const char* class_name) {
 
 	// TODO: Properly look for the class
 
-	auto class_path = static_cast<char*>(malloc(strlen(class_name) + 15));
-	strcpy(class_path, "Runtime/");
+	auto class_path = static_cast<char*>(malloc(PATH_MAX));
+
+	const char* executable_directory = PathTools::get_executable_directory();
+	assert(executable_directory);
+
+	strcpy(class_path, executable_directory);
+	strcat(class_path, "/Runtime/");
 	strcat(class_path, class_name);
 	strcat(class_path, ".class");
+
+	// FIXME: Check for overflow in a better way
+	assert(strlen(class_path) < PATH_MAX);
+
 	printf("Loading class %s from path %s\n", class_name, class_path);
 
 	ClassFile* class_file = ClassFile::create_from_path(class_path);

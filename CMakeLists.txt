@@ -40,7 +40,8 @@ add_executable(jvm main.cpp
         VM/Native/JVM/JVMClass.cpp
         VM/Native/JVM/JVMClass.h
         VM/Native/NativeClassRegistry.h
-        VM/Native/NativeClassRegistry.cpp)
+        VM/Native/NativeClassRegistry.cpp
+        Utils/PathTools.h)
 
 # Java Runtime
 set(RUNTIME_DIR ${CMAKE_SOURCE_DIR}/Runtime)
